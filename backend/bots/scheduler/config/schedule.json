@@ -1,0 +1,8 @@
+{
+    "frequency_per_day": 4,
+    "mode": "auto",
+    "custom_times": [],
+    "platforms": [
+        "youtube"
+    ]
+}

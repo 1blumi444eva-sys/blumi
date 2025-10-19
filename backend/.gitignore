@@ -1,0 +1,8 @@
+__pycache__/
+venv/
+.env
+*.pyc
+# ignore large media
+*.mp4
+*.mov
+*.avi

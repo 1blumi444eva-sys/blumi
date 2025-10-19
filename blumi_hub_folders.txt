@@ -1,0 +1,46 @@
+blumi_hub/                ← main project folder
+│
+├── hub/                  ← core framework
+│   ├── __init__.py
+│   ├── core.py
+│   ├── chat_interface.py
+│   ├── plugin_manager.py
+│   ├── utils.py
+│   └── cli.py            ← 👈 place CLI file here
+│
+├── bots/                 ← all bot plugins
+│   ├── __init__.py
+│   ├── postbot/
+│   │   ├── __init__.py
+│   │   ├── postbot.py
+│   │   ├── config.py
+│   │   └── api_wrappers.py
+│   ├── docbot/
+│   │   ├── __init__.py
+│   │   ├── docbot.py
+│   │   └── formatters.py
+│   ├── imagebot/
+│   │   ├── __init__.py
+│   │   ├── imagebot.py
+│   │   └── style_models.py
+│   ├── videobot/
+│   │   ├── __init__.py
+│   │   ├── videobot.py
+│   │   └── render_pipeline.py
+│   ├── marketbot/
+│   │   ├── __init__.py
+│   │   ├── marketbot.py
+│   │   └── mailer.py
+│   └── investbot/
+│       ├── __init__.py
+│       ├── investbot.py
+│       └── data_fetcher.py
+│
+├── config/               ← settings
+│   ├── __init__.py
+│   ├── hub_config.py
+│   └── bots_config.py
+│
+├── requirements.txt
+├── README.md
+└── run_hub.py            ← entry point (optional, quick start)
