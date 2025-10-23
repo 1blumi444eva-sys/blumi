@@ -269,7 +269,15 @@ def create_app() -> FastAPI:
         font: str = "Arial"
         voice_id: str | None = None
         save_preview: bool = True
-        caption: dict | None = None
+        # Structured caption settings passed from the frontend. Use a nested
+        # Pydantic model for validation and conversion.
+        class Caption(BaseModel):
+            placement: str | None = "auto"
+            hue: int | None = None
+            font: str | None = None
+            font_size: int | None = None
+
+        caption: Caption | None = None
 
     @app.post("/run")
     async def run_postbot(payload: RunPayload, background: BackgroundTasks):
@@ -286,7 +294,16 @@ def create_app() -> FastAPI:
             "final": None,
         }
 
-        background.add_task(_run_job_task, job_id, dict(payload))
+        # Use BaseModel.dict() to convert nested models into plain dicts before
+        # passing to the background job. This ensures downstream code expects
+        # a plain dict for caption settings.
+        try:
+            pdata = payload.dict()
+        except Exception:
+            # Fallback for environments where BaseModel is a minimal stub
+            pdata = dict(payload)
+
+        background.add_task(_run_job_task, job_id, pdata)
         return {"job_id": job_id}
 
     @app.get("/voices")
