@@ -1,3 +1,4 @@
+import os
 import subprocess
 import shlex
 from pathlib import Path
@@ -81,6 +82,31 @@ def merge_caption(
         ]
 
         logger.info("Running ffmpeg merge command: %s", " ".join(cmd))
+
+        # Optionally dump the filter graph and command to a debug file next to
+        # the output so CI and local runs can inspect the exact ffmpeg inputs.
+        try:
+            dump = False
+            if os.environ.get("BLUMI_DUMP_FILTER"):
+                dump = True
+            # always dump in test runs (pytest sets PYTEST_CURRENT_TEST sometimes),
+            # but guard to avoid noisy disks in production by default.
+            if os.environ.get("PYTEST_CURRENT_TEST"):
+                dump = True
+            if dump:
+                debug_path = Path(out_path).with_suffix("")
+                debug_file = debug_path.with_name(debug_path.name + "_ffmpeg_debug.txt")
+                try:
+                    with open(debug_file, "w", encoding="utf-8") as df:
+                        df.write("FILTER_COMPLEX:\n")
+                        df.write(vf + "\n\n")
+                        df.write("COMMAND:\n")
+                        df.write(" ".join(cmd) + "\n")
+                    logger.info("Wrote ffmpeg debug file: %s", debug_file)
+                except Exception:
+                    logger.exception("Failed to write ffmpeg debug file")
+        except Exception:
+            logger.exception("Error while deciding to dump ffmpeg debug file")
 
         result = subprocess.run(cmd, check=False, capture_output=True, text=True)
         if result.returncode != 0:

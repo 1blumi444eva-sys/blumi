@@ -40,3 +40,7 @@ def test_merge_caption_creates_output(tmp_path):
     merge_caption(str(bg), str(caption), str(out), fade_in=0.2, fade_out=0.2, duration=2.0)
 
     assert out.exists() and out.stat().st_size > 0
+
+    # debug file should be written when running under pytest (composer checks PYTEST_CURRENT_TEST)
+    debug_file = out.with_name(out.stem + "_ffmpeg_debug.txt")
+    assert debug_file.exists() and debug_file.stat().st_size > 0
